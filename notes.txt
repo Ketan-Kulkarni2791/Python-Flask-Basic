@@ -1,0 +1,67 @@
+****** What is Flask-Migrate? ******
+
+Flask-Migrate is a wrapper around Alembic, which handles SQLAlchemy database migrations for Flask applications. To be
+explicit, the use of the Flask-Migrate module is intended for Flask applications that are using SQLAlchemy.
+
+Alembic is a lightweight database migration tool for usage with the SQLAlchemy Database Toolkit for Python.
+
+SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and
+flexibility of SQL.
+
+
+****** Setup of Flask-Migrate ******
+
+Install Flask with pip:
+-- pip install Flask
+
+Install Flask-Migrate with pip:
+-- pip install Flask-Migrate
+
+Install Flask-Script withpip:
+-- pip install Flask-Script
+
+Install flask-sqlalchemy withpip:
+-- pip install flask-sqlalchemy
+
+
+1. We need to use init command
+
+-- python migrate_example.py db init
+
+This creates a migration repository.
+This will add a migrations folder to your application. The contents of this folder need to be added to version control
+along with your other source files and see the Migrations folder in your project.
+In the migrations folder, you will see versions folder, alembic.ini (configuration file) and some other files.
+
+
+2. We need to use migrate command:
+
+-- python migrate_example.py db migrate
+
+This will create data.db file. But the tables will not be added yet into the database.
+Alembic currently cannot detect table name changes, column name changes, or anonymously named constraints.
+Alembic can detect newly added tables and columns only for now.
+
+
+3. We need to use the upgrade command.
+
+-- python migrate_example.py db upgrade
+
+After using the upgrade command we can apply the migration to the database. It should look something like this.
+Then each time the database models change, repeat the migrate and upgrade commands.
+We can see that tables have been added into the Database.
+
+
+****** To add a new column into a table. ******
+
+Add the field in model class and serializer class, if any. And the hit migrate command.
+Then in the newly created versioned file, add following code :
+
+def upgrade():
+    with op.batch_alter_table('employee') as batch_op:
+        batch_op.add_column(sa.Column('age', sa.Integer(), nullable=True))
+
+
+def downgrade():
+    with op.batch_alter_table('employee') as batch_op:
+        batch_op.drop_column('age')
